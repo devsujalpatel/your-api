@@ -8,6 +8,9 @@ import helmet from 'helmet';
 import config from '@/config';
 import limiter from './lib/express_rate_limit';
 
+// Router
+import v1Routes from '@/routes/v1';
+
 // Types imports
 import type { CorsOptions } from 'cors';
 
@@ -55,12 +58,7 @@ app.use(limiter);
 
 (async () => {
   try {
-    app.get('/', (req, res) => {
-      res.json({
-        message: 'Hello World!',
-      });
-    });
-
+    app.use('/api/v1', v1Routes);
     app.listen(config.PORT, () => {
       console.log(`Server is running on : http://localhost:${config.PORT}`);
     });
@@ -71,3 +69,15 @@ app.use(limiter);
     }
   }
 })();
+
+const handleServerShutdown = async () => {
+  try {
+    console.log('Server SHUTDOWN');
+    process.exit(0);
+  } catch (error) {
+    console.log('Error during server shutdown', error);
+  }
+};
+
+process.on('SIGTERM', handleServerShutdown);
+process.on('SIGINT', handleServerShutdown);
