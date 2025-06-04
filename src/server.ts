@@ -51,14 +51,23 @@ app.use(
 app.use(helmet());
 
 // Apply rate limiting middleware to prevent excessive requests and enhance security
-app.use(limiter)
+app.use(limiter);
 
-app.get('/', (req, res) => {
-  res.json({
-    message: 'Hello World!',
-  });
-});
+(async () => {
+  try {
+    app.get('/', (req, res) => {
+      res.json({
+        message: 'Hello World!',
+      });
+    });
 
-app.listen(config.PORT, () => {
-  console.log(`Server is running on : http://localhost:${config.PORT}`);
-});
+    app.listen(config.PORT, () => {
+      console.log(`Server is running on : http://localhost:${config.PORT}`);
+    });
+  } catch (error) {
+    console.error('Failed to start the server', error);
+    if (config.NODE_ENV === 'production') {
+      process.exit(1);
+    }
+  }
+})();
