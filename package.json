@@ -12,6 +12,8 @@
   "license": "MIT",
   "packageManager": "pnpm@10.6.5",
   "devDependencies": {
+    "@types/compression": "^1.8.0",
+    "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.18",
     "@types/express": "^5.0.2",
     "@types/node": "^22.15.29",
@@ -21,9 +23,13 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
+    "compression": "^1.8.0",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.1.0",
     "ts-node": "^10.9.2"
   }
 }
