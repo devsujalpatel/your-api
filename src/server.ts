@@ -7,6 +7,7 @@ import helmet from 'helmet';
 // Custom modules
 import config from '@/config';
 import limiter from './lib/express_rate_limit';
+import { connectToDatabase, dissconnectFromDatabase } from './lib/mongoose';
 
 // Router
 import v1Routes from '@/routes/v1';
@@ -58,7 +59,10 @@ app.use(limiter);
 
 (async () => {
   try {
+    await connectToDatabase();
+
     app.use('/api/v1', v1Routes);
+
     app.listen(config.PORT, () => {
       console.log(`Server is running on : http://localhost:${config.PORT}`);
     });
@@ -72,6 +76,7 @@ app.use(limiter);
 
 const handleServerShutdown = async () => {
   try {
+    await dissconnectFromDatabase();
     console.log('Server SHUTDOWN');
     process.exit(0);
   } catch (error) {
