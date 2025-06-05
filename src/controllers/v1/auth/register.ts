@@ -5,6 +5,7 @@ import { getUername } from '@/utils';
 
 // Models
 import User from '@/models/user';
+import Token from '@/models/token';
 
 // Types
 import type { Request, Response } from 'express';
@@ -27,6 +28,13 @@ const register = async (req: Request, res: Response): Promise<void> => {
 
     const accessToken = generateAccessToken(newUser._id);
     const refreshToken = generateRefreshToken(newUser._id);
+
+    // Store refresh token in db
+    await Token.create({ token: refreshToken, userId: newUser._id });
+    logger.info('Refresh token stored successfully', {
+      userId: newUser._id,
+      token: refreshToken,
+    });
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
