@@ -23,10 +23,12 @@ const register = async (req: Request, res: Response): Promise<void> => {
       role,
     });
 
-
-    
     res.status(201).json({
-      message: 'New user Created',
+      user: {
+        username: newUser.username,
+        email: newUser.email,
+        role: newUser.role,
+      },
     });
   } catch (err) {
     res.status(500).json({
