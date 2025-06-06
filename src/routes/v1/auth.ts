@@ -6,6 +6,8 @@ import register from '@/controllers/v1/auth/register';
 
 // Middlewares
 
+import validationError from '@/middlewares/validationError';
+
 // Models
 
 const router = Router();
@@ -20,6 +22,7 @@ router.post(
     .withMessage('Email must be less than 50 characters')
     .isEmail()
     .withMessage('Email is invalid'),
+  validationError,
   register,
 );
 
