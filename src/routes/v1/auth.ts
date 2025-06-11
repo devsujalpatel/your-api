@@ -12,6 +12,7 @@ import validationError from '@/middlewares/validationError';
 // Models
 import User from '@/models/user';
 import login from '@/controllers/v1/auth/login';
+import refreshToken from '@/controllers/v1/auth/refresh_token';
 
 const router = Router();
 
@@ -84,5 +85,7 @@ router.post(
   validationError,
   login,
 );
+
+router.post('/refresh-token', refreshToken);
 
 export default router;
