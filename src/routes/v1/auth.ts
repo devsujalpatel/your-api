@@ -13,6 +13,7 @@ import validationError from '@/middlewares/validationError';
 import User from '@/models/user';
 import login from '@/controllers/v1/auth/login';
 import refreshToken from '@/controllers/v1/auth/refresh_token';
+import logout from '@/controllers/v1/auth/logout';
 
 const router = Router();
 
@@ -96,5 +97,7 @@ router.post(
   validationError,
   refreshToken,
 );
+
+router.post('/logout', logout);
 
 export default router;
