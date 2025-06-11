@@ -8,6 +8,7 @@ import register from '@/controllers/v1/auth/register';
 // Middlewares
 
 import validationError from '@/middlewares/validationError';
+import authenticate from '@/middlewares/authenticate';
 
 // Models
 import User from '@/models/user';
@@ -98,6 +99,6 @@ router.post(
   refreshToken,
 );
 
-router.post('/logout', logout);
+router.post('/logout', authenticate,logout);
 
 export default router;
