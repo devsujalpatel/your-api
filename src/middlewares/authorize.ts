@@ -25,13 +25,13 @@ const authorize = (roles: AuthRole[]) => {
         return;
       }
       return next();
-    } catch (error) {
+    } catch (err) {
       res.status(500).json({
         code: 'ServerError',
         message: 'Internal server error',
-        error: error,
+        error: err,
       });
-      logger.error('Error while authorizing user', error)
+      logger.error('Error while authorizing user', err);
     }
   };
 };
