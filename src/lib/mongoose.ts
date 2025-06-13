@@ -38,7 +38,7 @@ export const connectToDatabase = async (): Promise<void> => {
   }
 };
 
-export const dissconnectFromDatabase = async (): Promise<void> => {
+export const disconnectFromDatabase = async (): Promise<void> => {
   try {
     await mongoose.disconnect();
     logger.info('Disconnected from the database successfully', {

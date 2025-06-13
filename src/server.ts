@@ -7,7 +7,7 @@ import helmet from 'helmet';
 // Custom modules
 import config from '@/config';
 import limiter from './lib/express_rate_limit';
-import { connectToDatabase, dissconnectFromDatabase } from './lib/mongoose';
+import { connectToDatabase, disconnectFromDatabase } from './lib/mongoose';
 import { logger } from '@/lib/winston';
 
 // Router
@@ -47,7 +47,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // enable cookie parser
 app.use(cookieParser());
-// enable respose compression to reduce palyload size and improve performance
+// enable response compression to reduce payload size and improve performance
 app.use(
   compression({
     threshold: 1024, // Only Compress request larger than 1KB
@@ -78,7 +78,7 @@ app.use(limiter);
 
 const handleServerShutdown = async () => {
   try {
-    await dissconnectFromDatabase();
+    await disconnectFromDatabase();
     logger.warn('Server SHUTDOWN');
     process.exit(0);
   } catch (error) {
