@@ -26,6 +26,36 @@ router.get(
         throw new Error('Username is already taken');
       }
     }),
+  body('email')
+    .optional()
+    .isLength({ max: 50 })
+    .withMessage('Email must be less than 50 characters')
+    .isEmail()
+    .withMessage('Email is invalid')
+    .custom(async (value) => {
+      const emailExists = await User.exists({ email: value });
+      if (emailExists) {
+        throw new Error('Email is already in use');
+      }
+    }),
+  body('password')
+    .optional()
+    .isLength({ min: 8 })
+    .withMessage('Password must be at least 8 characters long'),
+  body('first_name')
+    .optional()
+    .isLength({ max: 20 })
+    .withMessage('First name must be less than 20 characters'),
+  body('last_name')
+    .optional()
+    .isLength({ max: 20 })
+    .withMessage('Last name must be less than 20 characters'),
+  body(['website', 'facebook', 'instagram', 'linkedin', 'x', 'youtube'])
+    .optional()
+    .isURL()
+    .withMessage('URL is invalid')
+    .isLength({ max: 100 })
+    .withMessage('Website must be less than 100 characters'),
   validationError,
   getCurrentUser,
 );
