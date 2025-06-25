@@ -1,7 +1,7 @@
 import { generateAccessToken, generateRefreshToken } from '@/lib/jwt';
 import { logger } from '@/lib/winston';
 import config from '@/config';
-import { getUername } from '@/utils';
+import { getUsername } from '@/utils';
 
 // Models
 import User from '@/models/user';
@@ -20,12 +20,12 @@ const register = async (req: Request, res: Response): Promise<void> => {
       code: 'AuthorizationError',
       message: 'You cannot register as an admin',
     });
-    logger.warn(`User with email ${email} tried to register as an adin but is not in whitelist`)
+    logger.warn(`User with email ${email} tried to register as an admin but is not in whitelist`)
     return;
   }
 
   try {
-    const username = getUername();
+    const username = getUsername();
     const newUser = await User.create({
       username,
       email,
