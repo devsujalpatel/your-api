@@ -15,6 +15,8 @@ const config = {
   JWT_ACCESS_EXPIRES_IN: process.env.JWT_ACCESS_EXPIRES_IN as ms.StringValue,
   JWT_REFRESH_EXPIRES_IN: process.env.JWT_REFRESH_EXPIRES_IN as ms.StringValue,
   WHITELIST_ADMINS_MAILS: ['sujalpatelcoder@gmail.com'],
+  defaultREsLimit: 20,
+  defaultResOffset: 0,
 };
 
 export default config;
