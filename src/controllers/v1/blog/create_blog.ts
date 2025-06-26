@@ -14,11 +14,16 @@ const window = new JSDOM('').window;
 const purify = createDOMPurify(window);
 
 const createBlog = async (req: Request, res: Response): Promise<void> => {
+  console.log("1");
+  
   try {
+      console.log("2");
+      
     const { title, content, banner, status } = req.body as BlogData;
     const userId = req.userId;
     const cleanContent = purify.sanitize(content);
-
+    console.log("3");
+    
     const newBlog = await Blog.create({
       title,
       content: cleanContent,
@@ -27,6 +32,8 @@ const createBlog = async (req: Request, res: Response): Promise<void> => {
       author: userId,
     });
     logger.info('New blog created', newBlog);
+    console.log("4");
+    
     res.status(201).json({
       blog: newBlog,
     });

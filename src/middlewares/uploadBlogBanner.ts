@@ -18,6 +18,8 @@ const uploadBlogBanner = (method: 'post' | 'put') => {
         code: 'ValidationError',
         message: 'Blog banner is required',
       });
+      console.log('1');
+
       return;
     }
 
@@ -26,6 +28,8 @@ const uploadBlogBanner = (method: 'post' | 'put') => {
         code: 'ValidationError',
         message: 'File size must be less than 2MB',
       });
+      console.log('2');
+
       return;
     }
 
@@ -64,11 +68,13 @@ const uploadBlogBanner = (method: 'post' | 'put') => {
 
       req.body.banner = newBanner;
       next();
+      return;
     } catch (err: UploadApiErrorResponse | any) {
       res.status(err.http_status).json({
         code: err.http_status < 500 ? 'ValidationError' : err.name,
         message: err.message,
       });
+      console.log(err);
 
       logger.error('Error while uploading blog banner to Cloudinary', err);
     }
