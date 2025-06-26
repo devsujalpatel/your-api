@@ -8,6 +8,7 @@ import authorize from '@/middlewares/authorize';
 import uploadBlogBanner from '@/middlewares/uploadBlogBanner';
 
 import createBlog from '@/controllers/v1/blog/create_blog';
+import updateBlog from '@/controllers/v1/blog/update_blog';
 
 const upload = multer();
 
@@ -37,6 +38,30 @@ router.post(
   createBlog,
 );
 
+
+router.put(
+  "/:blogId",
+   authenticate,
+  authorize(['admin']),
+  upload.single('banner_image'),
+  uploadBlogBanner('put'),
+  body('title')
+    .trim()
+    .notEmpty()
+    .withMessage('Title is required')
+    .isLength({ max: 180 })
+    .withMessage('Title must be less than 180 characters'),
+  body('content')
+    .trim()
+    .notEmpty()
+    .withMessage('Content is required'),
+  body('status')
+    .optional()
+    .isIn(['draft', 'published'])
+    .withMessage('Status must be draft or published'),
+  validationError,
+  updateBlog,
+)
 
 
 export default router;

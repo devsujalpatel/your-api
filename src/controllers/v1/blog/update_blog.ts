@@ -13,26 +13,45 @@ type BlogData = Pick<IBlog, 'title' | 'content' | 'banner' | 'status'>;
 const window = new JSDOM('').window;
 const purify = createDOMPurify(window);
 
-const createBlog = async (req: Request, res: Response): Promise<void> => {
-
-  
+const updateBlog = async (req: Request, res: Response): Promise<void> => {
   try {
-      
+    const { blogId } = req.params;
     const { title, content, banner, status } = req.body as BlogData;
     const userId = req.userId;
     const cleanContent = purify.sanitize(content);
+
+    const blog = await Blog.findById(blogId).select('-__v').lean().exec();
+    if (!blog) {
+      res.status(404).json({
+        code: 'NotFound',
+        message: 'Blog not found',
+      });
+      return;
+    }
     
-    const newBlog = await Blog.create({
+
+
+    const updateBlog = await Blog.findByIdAndUpdate(blogId, {
       title,
       content: cleanContent,
       banner,
       status,
       author: userId,
-    });
-    logger.info('New blog created', newBlog);
-    
+    }).select('-__v').lean().exec();
+
+    if(!updateBlog){
+      res.status(404).json({
+        code: 'NotFound',
+        message: 'Blog not found',
+      });
+      return;
+    }
+
+    logger.info('Blog Updated Successfully', updateBlog);
+ 
+
     res.status(201).json({
-      blog: newBlog,
+      blog: updateBlog,
     });
   } catch (error) {
     res.status(500).json({
@@ -40,8 +59,8 @@ const createBlog = async (req: Request, res: Response): Promise<void> => {
       message: 'Internal server error',
       error,
     });
-    logger.error('Error while creating blog', error);
+    logger.error('Error while updating blog', error);
   }
 };
 
-export default createBlog;
+export default updateBlog;
