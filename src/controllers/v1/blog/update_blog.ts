@@ -28,8 +28,6 @@ const updateBlog = async (req: Request, res: Response): Promise<void> => {
       });
       return;
     }
-    
-
 
     const updateBlog = await Blog.findByIdAndUpdate(blogId, {
       title,
@@ -37,9 +35,12 @@ const updateBlog = async (req: Request, res: Response): Promise<void> => {
       banner,
       status,
       author: userId,
-    }).select('-__v').lean().exec();
+    })
+      .select('-__v')
+      .lean()
+      .exec();
 
-    if(!updateBlog){
+    if (!updateBlog) {
       res.status(404).json({
         code: 'NotFound',
         message: 'Blog not found',
@@ -48,7 +49,6 @@ const updateBlog = async (req: Request, res: Response): Promise<void> => {
     }
 
     logger.info('Blog Updated Successfully', updateBlog);
- 
 
     res.status(201).json({
       blog: updateBlog,

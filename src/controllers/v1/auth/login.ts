@@ -13,7 +13,7 @@ type UserData = Pick<IUser, 'email' | 'password'>;
 
 const login = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { email, password } = req.body as UserData;
+    const { email } = req.body as UserData;
 
     const user = await User.findOne({ email })
       .select('username email password role')
