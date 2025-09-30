@@ -9,6 +9,7 @@ import uploadBlogBanner from '@/middlewares/uploadBlogBanner';
 
 import createBlog from '@/controllers/v1/blog/create_blog';
 import updateBlog from '@/controllers/v1/blog/update_blog';
+import deleteBlog from '@/controllers/v1/blog/delete_blog';
 
 const upload = multer();
 
@@ -26,10 +27,7 @@ router.post(
     .withMessage('Title is required')
     .isLength({ max: 180 })
     .withMessage('Title must be less than 180 characters'),
-  body('content')
-    .trim()
-    .notEmpty()
-    .withMessage('Content is required'),
+  body('content').trim().notEmpty().withMessage('Content is required'),
   body('status')
     .optional()
     .isIn(['draft', 'published'])
@@ -38,10 +36,9 @@ router.post(
   createBlog,
 );
 
-
 router.put(
-  "/:blogId",
-   authenticate,
+  '/:blogId',
+  authenticate,
   authorize(['admin']),
   upload.single('banner_image'),
   uploadBlogBanner('put'),
@@ -51,17 +48,22 @@ router.put(
     .withMessage('Title is required')
     .isLength({ max: 180 })
     .withMessage('Title must be less than 180 characters'),
-  body('content')
-    .trim()
-    .notEmpty()
-    .withMessage('Content is required'),
+  body('content').trim().notEmpty().withMessage('Content is required'),
   body('status')
     .optional()
     .isIn(['draft', 'published'])
     .withMessage('Status must be draft or published'),
   validationError,
   updateBlog,
-)
+);
 
+router.delete(
+  '/:blogId',
+  authenticate,
+  authorize(['admin']),
+  param('blogId').isMongoId().withMessage('Blog id is invalid'),
+  validationError,
+  deleteBlog,
+);
 
 export default router;
