@@ -11,6 +11,7 @@ import createBlog from '@/controllers/v1/blog/create_blog';
 import updateBlog from '@/controllers/v1/blog/update_blog';
 import deleteBlog from '@/controllers/v1/blog/delete_blog';
 import getAllBlogs from '@/controllers/v1/blog/get_all_blogs';
+import getBlogsByUser from '@/controllers/v1/blog/get_blogs_by_user';
 
 const upload = multer();
 
@@ -37,9 +38,8 @@ router.post(
   createBlog,
 );
 
-
 router.get(
-  "/",
+  '/',
   authenticate,
   authorize(['admin']),
   query('limit')
@@ -51,9 +51,25 @@ router.get(
     .isInt({ min: 0 })
     .withMessage('Offset must be a positive integer'),
   validationError,
-  getAllBlogs
-)
+  getAllBlogs,
+);
 
+
+router.get('/user/:userId', 
+  authenticate,
+  authorize(['admin', 'user']),
+  param('userId').isMongoId().withMessage('Invalid user Id'),
+  query('limit')
+    .optional()
+    .isInt({ min: 1, max: 50 })
+    .withMessage('Limit must be between 1 and 50'),
+  query('offset')
+    .optional()
+    .isInt({ min: 0 })
+    .withMessage('Offset must be a positive integer'),
+  validationError,
+  getBlogsByUser
+)
 
 router.put(
   '/:blogId',
@@ -63,11 +79,10 @@ router.put(
   uploadBlogBanner('put'),
   body('title')
     .trim()
-    .notEmpty()
-    .withMessage('Title is required')
+    .optional()
     .isLength({ max: 180 })
     .withMessage('Title must be less than 180 characters'),
-  body('content').trim().notEmpty().withMessage('Content is required'),
+  body('content').trim().optional(),
   body('status')
     .optional()
     .isIn(['draft', 'published'])
