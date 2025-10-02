@@ -12,6 +12,7 @@ import updateBlog from '@/controllers/v1/blog/update_blog';
 import deleteBlog from '@/controllers/v1/blog/delete_blog';
 import getAllBlogs from '@/controllers/v1/blog/get_all_blogs';
 import getBlogsByUser from '@/controllers/v1/blog/get_blogs_by_user';
+import getBlogBySlug from '@/controllers/v1/blog/get_blog_by_slug';
 
 const upload = multer();
 
@@ -54,8 +55,8 @@ router.get(
   getAllBlogs,
 );
 
-
-router.get('/user/:userId', 
+router.get(
+  '/user/:userId',
   authenticate,
   authorize(['admin', 'user']),
   param('userId').isMongoId().withMessage('Invalid user Id'),
@@ -68,8 +69,17 @@ router.get('/user/:userId',
     .isInt({ min: 0 })
     .withMessage('Offset must be a positive integer'),
   validationError,
-  getBlogsByUser
-)
+  getBlogsByUser,
+);
+
+router.get(
+  '/:slug',
+  authenticate,
+  authorize(['admin', 'user']),
+  param('slug').notEmpty().withMessage('Slug is required'),
+  validationError,
+  getBlogBySlug,
+);
 
 router.put(
   '/:blogId',
