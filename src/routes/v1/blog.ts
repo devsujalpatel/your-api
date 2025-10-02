@@ -85,19 +85,20 @@ router.put(
   '/:blogId',
   authenticate,
   authorize(['admin']),
+  param('blogId').isMongoId().withMessage('Blog id is invalid'),
   upload.single('banner_image'),
-  uploadBlogBanner('put'),
   body('title')
     .trim()
     .optional()
     .isLength({ max: 180 })
     .withMessage('Title must be less than 180 characters'),
-  body('content').trim().optional(),
+  body('content'),
   body('status')
     .optional()
     .isIn(['draft', 'published'])
     .withMessage('Status must be draft or published'),
   validationError,
+  uploadBlogBanner('put'),
   updateBlog,
 );
 
