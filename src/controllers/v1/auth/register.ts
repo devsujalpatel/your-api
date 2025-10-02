@@ -20,7 +20,9 @@ const register = async (req: Request, res: Response): Promise<void> => {
       code: 'AuthorizationError',
       message: 'You cannot register as an admin',
     });
-    logger.warn(`User with email ${email} tried to register as an admin but is not in whitelist`)
+    logger.warn(
+      `User with email ${email} tried to register as an admin but is not in whitelist`,
+    );
     return;
   }
 
