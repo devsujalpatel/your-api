@@ -1,17 +1,23 @@
 import { logger } from '@/lib/winston';
+import { v2 as cloudinary } from 'cloudinary';
+
 import Blog from '@/models/blog';
+import User from '@/models/user';
+
 import type { Request, Response } from 'express';
 
 const deleteBlog = async (req: Request, res: Response): Promise<void> => {
   try {
     const { blogId } = req.params;
+    const userId = req.userId;
 
-    const user = await Blog.findByIdAndDelete(blogId)
-      .select('-__v')
+    const user = await User.findById(userId).select('role').lean().exec();
+    const blog = await Blog.findById(blogId)
+      .select('author banner.publicId')
       .lean()
       .exec();
 
-    if (!user) {
+    if (!blog) {
       res.status(404).json({
         code: 'NotFound',
         message: 'Blog not found',
@@ -19,7 +25,27 @@ const deleteBlog = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    logger.info('Blog Deleted Successfully');
+    if (blog.author !== userId && user?.role !== 'admin') {
+      res.status(403).json({
+        code: 'AuthorizationError',
+        message: 'Access denied, insufficient permission',
+      });
+      logger.warn(`A User tried to delete a blog without permission`, {
+        userId,
+        blog,
+      });
+      return;
+    }
+
+    await cloudinary.uploader.destroy(blog.banner.publicId);
+    logger.info('Blog banner deleted successfully', {
+      publicId: blog.banner.publicId,
+    });
+
+    await Blog.deleteOne({ _id: blogId });
+    logger.info('Blog Deleted Successfully', {
+      blogId,
+    });
 
     res.sendStatus(204);
   } catch (error) {
