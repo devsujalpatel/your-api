@@ -1,7 +1,7 @@
 import { logger } from '@/lib/winston';
 
 import Blog from '@/models/blog';
-import like from '@/models/like';
+import Like from '@/models/like';
 
 import type { Request, Response } from 'express';
 
@@ -19,7 +19,7 @@ const likeBlog = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const existingLike = await like.findOne({ blogId, userId }).lean().exec();
+    const existingLike = await Like.findOne({ blogId, userId }).lean().exec();
 
     if (existingLike) {
       res.status(400).json({
@@ -28,7 +28,7 @@ const likeBlog = async (req: Request, res: Response): Promise<void> => {
       });
       return;
     }
-    await like.create({ blogId, userId });
+    await Like.create({ blogId, userId });
 
     blog.likesCount++;
     await blog.save();
