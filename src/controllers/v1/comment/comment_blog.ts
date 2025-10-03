@@ -23,7 +23,7 @@ const commentBlog = async (req: Request, res: Response): Promise<void> => {
     const blog = await Blog.findById(blogId).select('_id commentsCount').exec();
 
     if (!blog) {
-      res.status(40404).json({
+      res.status(404).json({
         code: 'NotFound',
         message: 'Blog not found',
       });
