@@ -1,3 +1,3 @@
-# Your Api 
-Your api is a free open-source api platform for you to create to frontend application 
+# Blog Api 
+Blog is a free open-source blog api for you to create to frontend application 
 test frontent authentication forms and the stuffs 
