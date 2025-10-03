@@ -39,8 +39,7 @@ const unlikeBlog = async (req: Request, res: Response): Promise<void> => {
       userId,
       likesCount: blog.likesCount,
     });
-    res.status(204);
-
+    res.sendStatus(204);
   } catch (error) {
     res.status(500).json({
       code: 'ServerError',
